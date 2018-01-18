@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="static/img/favicon.ico">
+
+<title>报文服务列表</title>
+
+<!-- Bootstrap core CSS -->
+<link href="static/include/bootstrap/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Bootstrap theme -->
+<link href="static/include/bootstrap/css/bootstrap-theme.min.css"
+	rel="stylesheet">
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<link
+	href="static/include/bootstrap/assets/css/ie10-viewport-bug-workaround.css"
+	rel="stylesheet">
+
+<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+<!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<script
+	src="static/include/bootstrap/assets/js/ie-emulation-modes-warning.js"></script>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+<link href="static/include/jquery-ui/jquery-ui.min.css"
+	rel="stylesheet">
+<link href="static/include/jquery-ui/jquery-ui.structure.min.css"
+	rel="stylesheet">
+<link href="static/include/jquery-ui/jquery-ui.theme.min.css"
+	rel="stylesheet">
+</head>
+
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top" style="padding-top: 10px;">
+	  <div class="container">
+	  	<ul class="nav navbar-nav">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" id="drop1" data-toggle="dropdown" 
+						role="button" aria-haspopup="true" aria-expanded="true"> 
+						<span id="project">选择项目</span>
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="drop1">
+						<li><a href="javascript:app.loadServiceList('指尖私行','finger');">指尖私行</a></li>
+						<!--<li><a href="javascript:app.loadServiceList('美美理财','meme2c');">美美理财</a></li>-->
+						<!--<li><a href="javascript:app.loadServiceList('消费','consumption');">消费</a></li>-->
+						<!--<li><a href="javascript:app.loadServiceList('保险','insurance');">保险</a></li>-->
+						<!--<li><a href="javascript:app.loadServiceList('活动内容','acs');">活动内容</a></li>-->
+						<!--<li><a href="javascript:app.loadServiceList('基金','fund');">基金</a></li>-->
+					</ul>
+				</li>
+			</ul>
+			<span id="projectName" class="label label-danger"></span>
+			&nbsp;&nbsp;&nbsp;
+		<span id="apisCount" class="label label-info"></span>
+		&nbsp;&nbsp;&nbsp;
+		<span id="checkedCount" class="label label-warning"></span>
+		<!-- &nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-warning genCode">生成代码</button> -->
+		&nbsp;&nbsp;&nbsp;
+		<button type="button" class="btn btn-sm btn-primary downloadCode">下载代码</button>
+	  </div>
+	</nav>
+	<div class="container" role="main">
+		<div class="page-header">
+			<!-- 占用一定高度，防止nav导航条盖住下面的内容 -->
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="apis" class="table table-striped">
+					<thead>
+						<tr>
+							<th><input type="checkbox" class="checkRowAll"></th>
+							<th>名称</th>
+							<th>标题</th>
+							<th>描述</th>
+							<th>登录后访问</th>
+							<th>是否登录操作</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- /container -->
+
+	<div id="serviceDetailDialog" class="panel-body">
+		<form>
+			<div class="form-group">
+				<label for="recipient-name" class="control-label">名称:</label> <input
+					type="text" class="form-control" id="serviceName">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">标题:</label> <input
+					type="text" class="form-control" id="serviceTitle" maxlength="100">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">描述:</label> <input
+					type="text" class="form-control" id="serviceDesc">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">登录后访问:</label>
+				<input type="radio" name="needLogin" value="Y" checked>是
+				&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="needLogin" value="N">否
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">是否登录操作:</label>
+				<input type="radio" name="isLogin" value="Y">是
+				&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="isLogin" value="N" checked>否
+			</div>
+		</form>
+		<div class="page-header">
+			<span>请求参数</span>&nbsp;&nbsp;&nbsp;
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="requestParams" class="table table-striped">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>描述</th>
+							<th>分组名称</th>
+							<th>分组描述</th>
+							<th>是否加密</th>
+							<th>样例数据</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="page-header">
+			<span>响应参数</span>&nbsp;&nbsp;&nbsp;
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table id="responseParams" class="table table-striped">
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>描述</th>
+							<th>分组名称</th>
+							<th>分组描述</th>
+							<th>是否加密</th>
+							<th>样例数据</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div id="paramDetailDialog" class="panel-body">
+		<form>
+			<div class="form-group">
+				<label for="recipient-name" class="control-label">名称:</label> <input
+					type="text" class="form-control" id="paramName">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">描述:</label> <input
+					type="text" class="form-control" id="paramDesc">
+			</div>
+			<div class="form-group">
+				<label for="recipient-name" class="control-label">分组名称:</label> <input
+					type="text" class="form-control" id="paramGroupName">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">分组描述:</label> <input
+					type="text" class="form-control" id="paramGroupDesc">
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">是否加密:</label>
+				<input type="radio" name="isEnc" value="Y">是
+				&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="isEnc" value="N" checked>否
+			</div>
+			<div class="form-group">
+				<label for="message-text" class="control-label">样例数据:</label> <input
+					type="text" class="form-control" id="exampleValue">
+			</div>
+		</form>
+	</div>
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="static/include/jquery/jquery.js"></script>
+	<script>
+		window.jQuery
+				|| document
+						.write('<script src="static/include/bootstrap/assets/js/vendor/jquery.min.js"><\/script>')
+	</script>
+	<script src="static/include/bootstrap/js/bootstrap.min.js"></script>
+	<!-- <script src="static/include/bootstrap/assets/js/docs.min.js"></script> -->
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script
+		src="static/include/bootstrap/assets/js/ie10-viewport-bug-workaround.js"></script>
+	<script src="static/include/jquery-ui/jquery-ui.min.js"></script>
+	<script src="static/js/index.js"></script>
+</body>
+</html>
