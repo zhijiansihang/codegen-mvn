@@ -1,37 +1,29 @@
 package net.eagle.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileSystemUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import net.eagle.model.MMService;
 import net.eagle.script.MmcGenScript;
 import net.eagle.utils.ApiDataUtil;
 import net.eagle.utils.AppVars;
 import net.eagle.utils.ZipUtil;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.FileSystemUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class CodeGenController {
@@ -46,7 +38,7 @@ public class CodeGenController {
 	public List<MMService> apis(String project) {
 
 		ApiDataUtil util = ApiDataUtil.getInstance();
-		util.initWithAppVars(appVars);
+		//util.initWithAppVars(appVars);
 		util.loadProject(project);
 		
 		return ApiDataUtil.getInstance().getServiceList(project);
@@ -68,6 +60,22 @@ public class CodeGenController {
 			e.printStackTrace();
 		}
 		return ApiDataUtil.getInstance().getServiceList(project);
+	}
+	@RequestMapping(value = "/saveServiceFile")
+	public List<MMService> saveServiceFile() throws Exception{
+		File mfile = new File("C:\\Users\\paul\\Desktop\\api");
+		File[] files = mfile.listFiles();
+		int i = 1;
+		for (File file :files) {
+			String prixy = "["+StringUtils.leftPad(file.getName(), 30, ' ')+"]";
+			//System.out.println(file.getName());
+			byte[] bytes = FileUtils.readFileToByteArray(file);
+			String s = new String(bytes, "UTF-8").replace(" ", "").replaceAll("\r|\n|\t", "");
+			System.out.println(i+prixy+"="+s);
+			i++;
+			saveService("finger", "",s );
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "/saveService", method = { RequestMethod.GET, RequestMethod.POST })

@@ -13,8 +13,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
@@ -30,11 +33,13 @@ import net.zkbc.mmc.util.FreemarkerUtils;
 /**
  * 
  */
-public class ApiDataUtil {
+@Component
+public class ApiDataUtil implements InitializingBean{
 
 	private static Log log = LogFactory.getLog(ApiDataUtil.class);
 	
 	private static final String ENCODING = "UTF-8";
+	@Autowired
 	AppVars appVars;
 	
 	private boolean inited = false;
@@ -46,20 +51,21 @@ public class ApiDataUtil {
 	//serviceName做key的map，包含请求和响应参数
 	private Map<String, Map<String, MMService>> serviceMap;
 	
-	private ApiDataUtil(){
+	public ApiDataUtil(){
 	}
-    
+    public static ApiDataUtil  apiDataUtil = null ;
     public static ApiDataUtil getInstance()  
     {
-        return Nested.instance;
+        return apiDataUtil;
     }
-    //在第一次被引用时被加载
-    private static class Nested
-    {  
-        private static ApiDataUtil instance = new ApiDataUtil();
-    }  
 
-    public void initWithAppVars(AppVars appVars) {
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		initWithAppVars();
+		apiDataUtil=this;
+	}
+
+    public void initWithAppVars() {
 		if(!this.inited){
 			this.appVars = appVars;
 			this.serviceDirPath = this.appVars.dbServiceDirPath;
